@@ -1,0 +1,254 @@
+-------------------------------- BiZ9 START - 2-9-2026 -----------------------------------------------------------
+-- Blank
+-------------------------------- BiZ9 END - 2-9-2026 -------------------------------------------------------------
+-------------------------------- BiZ9 START - 2-17-2026 -----------------------------------------------------------
+-- Bk
+class Order_Data {
+    //9_order_post
+    // -- ORDER-POST-START -- //
+    // - Order_Logic.get(cart);
+    // -- ORDER-POST-END -- //
+
+    static post = async (database,order,order_payments,option) => {
+        return new Promise((callback) => {
+            let error = null;
+            let cache = null;
+            let data = {};
+            option = !Obj.check_is_empty(option)  ? option : {};
+            data.order = Data_Logic.get(Type.DATA_ORDER,0,{data:{order_number:order.order_number,cart_number:order.cart_number,user_id:order.user_id,grand_total:order.grand_total}});
+            data.order_items = [];
+            data.order_sub_items = [];
+            async.series([
+                async function(call) {
+                    const [biz_error,biz_data] = await Cache.get(database.data_config);
+                    cache = biz_data;
+                },
+                //post - order
+                function(call){
+                    for(const key in order) {
+                        if(!Obj.check_is_array(order[key]) && Obj.check_is_object(order[key])
+                            && key != Type.FIELD_ID && key != Type.FIELD_DATA_TYPE
+                            && key != Type.FIELD_SOURCE && key != Type.FIELD_SOURCE_ID
+                            && key != Type.FIELD_DATE_CREATE && key != Type.FIELD_DATE_SAVE)
+                        {
+                            data.order[key] = order[key];
+                        }
+                    }
+                    data.order[Type.FIELD_GRAND_TOTAL] = Order_Logic.get_total(order).grand_total;
+                    Adapter.post_item(database,cache,Type.DATA_ORDER,data.order).then(([biz_error,biz_data])=>{
+                        if(biz_error){
+                            error=Log.append(error,biz_error);
+                        }else{
+                            data.order = biz_data;
+                            call();
+                        }
+                    }).catch(err => {
+                        Log.error('Data-Order-Post',err);
+                        error=Log.append(error,err);
+                    });
+                },
+                //post - order items
+                function(call){
+                    if(order.order_items.length>0){
+                        for(const order_item of order.order_items){
+                            let post_order_item = Data_Logic.get(Type.DATA_ORDER_ITEM,0);
+                            for(const key in order_item){
+                                order_item.temp_row_id = Num.get_id();
+                                if(!Obj.check_is_array(order_item[key]) && Obj.check_is_object(order_item[key])
+                                    && key != Type.FIELD_ID && key != Type.FIELD_DATA_TYPE
+                                    && key != Type.FIELD_SOURCE && key != Type.FIELD_SOURCE_ID
+                                    && key != Type.FIELD_DATE_CREATE && key != Type.FIELD_DATE_SAVE){
+                                    post_order_item[key] = order_item[key];
+                                }
+                            }
+                            post_order_item[Type.FIELD_ORDER_ID] = data.order.id;
+                            post_order_item[Type.FIELD_ORDER_NUMBER] = data.order.order_number;
+                            post_order_item.temp_row_id = order_item.temp_row_id;
+                            data.order_items.push(post_order_item);
+                        }
+                        Adapter.post_item_list(database,cache,data.order_items).then(([biz_error,biz_data])=>{
+                            if(biz_error){
+                                error=Log.append(error,biz_error);
+                            }else{
+                                data.order_items = biz_data;
+                                call();
+                            }
+                        }).catch(err => {
+                            Log.error('Data-Order-Post',err);
+                            error=Log.append(error,err);
+                        });
+                    }
+                },
+                //post - order sub items
+                async function(call){
+                    if(order.order_items.length>0){
+                        for(const order_item of order.order_items){
+                            for(const order_sub_item of order_item.order_sub_items){
+                                let post_order_sub_item = Data_Logic.get(Type.DATA_ORDER_SUB_ITEM,0);
+                                for(const key in order_sub_item){
+                                    order_sub_item.temp_row_id = Num.get_id();
+                                    if(!Obj.check_is_array(order_item[key]) && Obj.check_is_object(order_item[key])
+                                        && key != Type.FIELD_ID && key != Type.FIELD_DATA_TYPE
+                                        && key != Type.FIELD_SOURCE && key != Type.FIELD_SOURCE_ID
+                                        && key != Type.FIELD_DATE_CREATE && key != Type.FILED_DATE_SAVE){
+                                        post_order_sub_item[key] = order_sub_item[key];
+                                    }
+                                }
+                                post_order_sub_item[Type.FIELD_ORDER_ITEM_ID]  =data.order_items.find(item_find => item_find.temp_row_id === order_item.temp_row_id).id;
+                                post_order_sub_item[Type.FIELD_ORDER_ID] = data.order.id;
+                                post_order_sub_item[Type.FIELD_ORDER_NUMBER] = data.order.order_number;
+                                data.order_sub_items.push(post_order_sub_item);
+                            }
+                        }
+                        const [biz_error,biz_data] = await Adapter.post_item_list(database,cache,data.order_sub_items);
+                        if(biz_error){
+                            error=Log.append(error,biz_error);
+                        }else{
+                            data.order_sub_items = biz_data;
+                        }
+                    }
+                },
+                //post - order_payments
+                async function(call){
+                    if(order_payments.length>0){
+                        const [biz_error,biz_data] = await Adapter.post_item_list(database,cache,order_payments);
+                        if(biz_error){
+                            error=Log.append(error,biz_error);
+                        }else{
+                            data.order_payments = biz_data;
+                        }
+                    }
+                },
+                //get - order
+                async function(call){
+                    const [biz_error,biz_data] = await Order_Data.get(database,data.order.order_number,option);
+                    if(biz_error){
+                        error=Log.append(error,biz_error);
+                    }else{
+                        data.order = biz_data;
+                    }
+                },
+            ]).then(result => {
+                callback([error,data.order]);
+            }).catch(err => {
+                Log.error("OrderData-Order-Item-Update",err);
+                callback([error,[]]);
+            });
+        });
+    };
+    //9_order_get
+    static get = (database,order_number) => {
+        return new Promise((callback) => {
+            let error = null;
+            let cache = null;
+            let data = {order:Data_Logic.get(Type.DATA_ORDER,0,{data:{order_number:order_number,order_items:[],user:Data_Logic.get(Type.DATA_USER,0)}})};
+            let order_parent_item_query = { $or: [] };
+            let order_sub_item_query = { $or: [] };
+            let order_sub_items = [];
+            async.series([
+                async function(call) {
+                    const [biz_error,biz_data] = await Cache.get(database.data_config);
+                    cache = biz_data;
+                },
+                //get_order
+                async function(call){
+                    let foreign_order_item = Data_Logic.get_search_foreign(Type.SEARCH_ITEMS,Type.DATA_ORDER_ITEM,Type.FIELD_ORDER_ID,Type.FIELD_ID);
+                    let foreign_user = Data_Logic.get_search_foreign(Type.SEARCH_ONE,Type.DATA_USER,Type.FIELD_ID,Type.FIELD_USER_ID,{title:'user'});
+                    let order_option = { id_field:Type.FIELD_ORDER_NUMBER,foreigns:[foreign_order_item,foreign_user] };
+                    const [biz_error,biz_data] = await Data.get(database,Type.DATA_ORDER,order_number,order_option);
+                    if(biz_error){
+                        error=Log.append(error,biz_error);
+                    }else{
+                        data.order = biz_data;
+                    }
+                },
+                //9_foreigns //9_get_foreigns get_order_foreigns
+                function(call){
+                    let foreign_order_sub_item = Data_Logic.get_search_foreign(Type.SEARCH_ITEMS,Type.DATA_ORDER_SUB_ITEM,Type.FIELD_ORDER_ITEM_ID,Type.FIELD_ID);
+                    let option_order_sub_item = { foreigns:[foreign_order_sub_item] };
+                    Foreign.get_data(database,cache,data.order.order_items,option_order_sub_item).then(([biz_error,biz_data])=>{
+                        if(biz_error){
+                            error=Log.append(error,biz_error);
+                        }else{
+                            data.order.order_items = biz_data;
+                            call();
+                        }
+                    }).catch(err => {
+                        Log.error('Data-Search-Simple-Foreign',err);
+                        error=Log.append(error,err);
+                    });
+                },
+                async function(call){
+                    data.order = Order_Logic.get_total(data.order);
+                },
+            ]).then(result => {
+                callback([error,data.order]);
+            }).catch(err => {
+                Log.error("Order-Get",err);
+                callback([error,[]]);
+            });
+        });
+    };
+    //9_order_delete
+    static delete = async (database,id) => {
+        return new Promise((callback) => {
+            let data = {};
+            let error = null;
+            data.order = Data_Logic.get(Type.DATA_ORDER,id);
+            async.series([
+                //get_order
+                async function(call){
+                    const [biz_error,biz_data] = await Data.get(database,Type.DATA_ORDER,id);
+                    if(biz_error){
+                        error=Log.append(error,biz_error);
+                    }else{
+                        data.order = biz_data;
+                    }
+                },
+                async function(call){
+                    const [biz_error,biz_data] = await Data.delete(database,Type.DATA_ORDER,id);
+                    if(biz_error){
+                        error=Log.append(error,biz_error);
+                    }else{
+                        data.order_delete = biz_data.item;
+                    }
+                },
+                async function(call){
+                    let search = Data_Logic.get_search(Type.DATA_ORDER_ITEM,{order_number:data.order.order_number},{},1,0);
+                    const [biz_error,biz_data] = await Data.delete_search(database,search.data_type,search.filter);
+                    if(biz_error){
+                        error=Log.append(error,biz_error);
+                    }else{
+                        data.delete_order_item_search = biz_data;
+                    }
+                },
+                async function(call){
+                    let search = Data_Logic.get_search(Type.DATA_ORDER_SUB_ITEM,{order_number:data.order.order_number},{},1,0);
+                    const [biz_error,biz_data] = await Data.delete_search(database,search.data_type,search.filter);
+                    if(biz_error){
+                        error=Log.append(error,biz_error);
+                    }else{
+                        data.delete_order_sub_item_search = biz_data;
+                    }
+                },
+                async function(call){
+                    let search = Data_Logic.get_search(Type.DATA_ORDER_PAYMENT,{order_number:data.order.order_number},{},1,0);
+                    const [biz_error,biz_data] = await Data.delete_search(database,search.data_type,search.filter);
+                    if(biz_error){
+                        error=Log.append(error,biz_error);
+                    }else{
+                        data.delete_order_payment_search = biz_data;
+                    }
+                },
+            ]).then(result => {
+                callback([error,data]);
+            }).catch(err => {
+                Log.error("OrderData-Order-Delete",err);
+                callback([error,[]]);
+            });
+        });
+    };
+}
+
+-------------------------------- BiZ9 END - 2-17-2026 -------------------------------------------------------------
+

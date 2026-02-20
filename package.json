@@ -1,0 +1,16 @@
+{
+  "name": "biz9-store",
+  "version": "1.0.4",
+  "description": "** Description",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "async": "^3.2.6",
+    "biz9-scriptz": "^5.8.12",
+    "biz9-utility": "^4.4.28"
+  }
+}
