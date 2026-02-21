@@ -67,18 +67,15 @@ class Store_Logic {
     static get_cart = (user_id,option) => {
         // - option - //
         // - cart_code = 'CA'
-        console.log('aaaa');
         option = !Obj.check_is_empty(option) ? option : {};
-        console.log('bbbbbb');
         let cart_code = option.cart_code ? option.cart_code+"-" : "";
-        console.log('cccccc');
         return Data_Logic.get(Store_Table.CART,0,{data:{user_id:user_id,cart_number:cart_code + Num.get_id(99999),grand_total:0,cart_items:[]}});
     };
-    static get_cart_item = (parent_data_type,parent_id,quanity,cost) =>{
-        return Data_Logic.get(Store_Table.CART_ITEM,0,{data:{parent_data_type:parent_data_type,parent_id:parent_id,quanity:quanity?quanity:0,cost:cost?cost:0,cart_sub_items:[]}});
+    static get_cart_item = (parent_table,parent_id,quanity,cost) =>{
+        return Data_Logic.get(Store_Table.CART_ITEM,0,{data:{parent_table:parent_table,parent_id:parent_id,quanity:quanity?quanity:0,cost:cost?cost:0,cart_sub_items:[]}});
     };
-    static get_cart_sub_item = (cart_item_id,type,quanity,cost) =>{
-        return Data_Logic.get(Store_Table.CART_SUB_ITEM,0,{data:{type:type,cart_item_id:cart_item_id,quanity:quanity,cost:cost}});
+    static get_cart_sub_item = (cart_item_id,type,parent_table,parent_id,quanity,cost) =>{
+        return Data_Logic.get(Store_Table.CART_SUB_ITEM,0,{data:{type:type,cart_item_id:cart_item_id,quanity:quanity,cost:cost,parent_table:parent_table,parent_id:parent_id}});
     };
     static get_cart_sub_items = () =>{
         return [
@@ -108,7 +105,6 @@ class Store_Logic {
         return cart;
     };
     //cart -- end
-
     //order -- start
     static get_order = (cart,option) => {
         option = option?option:{};
@@ -133,7 +129,7 @@ class Store_Logic {
         cart.cart_items.forEach(cart_item => {
             let order_item = Data_Logic.get(Store_Table.ORDER_ITEM,0,{data:{
                 order_number:order.order_number,
-                parent_data_type:cart_item.parent_data_type,
+                parent_table:cart_item.parent_table,
                 parent_id:cart_item.parent_id,
                 user_id:order.user_id,
                 quanity:cart_item.quanity?cart_item.quanity:0,
@@ -244,8 +240,9 @@ class Store_Logic {
     static get_test_cost(){
         return String(Num.get_id(999)) + "." + String(Num.get_id(99));
     }
-    static get_test_product = () =>{
-        let data = Data_Logic.get(Store_Table.PRODUCT,0);
+    static get_test_product = (option) =>{
+        option = !Obj.check_is_empty(option) ? option : {};
+        let data = Data_Logic.get(Store_Table.PRODUCT,0,option);
         data.cost = Store_Logic.get_test_cost();
         data.old_cost = Store_Logic.get_test_cost();
         data.category = "Category "+String(Num.get_id());
