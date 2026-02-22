@@ -26,6 +26,8 @@ class Store_Field {
     static CART_NUMBER = 'cart_number';
     static CART_ID = 'cart_id';
     static CART_ITEM_ID = 'cart_item_id';
+
+    static GRAND_TOTAL = 'grand_total';
     //order
     static ORDER_NUMBER = 'order_number';
     static ORDER_ID = 'order_id';
@@ -241,7 +243,7 @@ class Store_Logic {
         return String(Num.get_id(999)) + "." + String(Num.get_id(99));
     }
     static get_test_product = (option) =>{
-        option = !Obj.check_is_empty(option) ? option : {};
+        option = !Obj.check_is_empty(option) ? option : {title:'Product'};
         let data = Data_Logic.get(Store_Table.PRODUCT,0,option);
         data.cost = Store_Logic.get_test_cost();
         data.old_cost = Store_Logic.get_test_cost();
@@ -257,6 +259,7 @@ class Store_Logic {
 module.exports = {
     Store_Field,
     Store_Title,
+    Store_Table,
     Store_Type,
     Store_Logic,
 };

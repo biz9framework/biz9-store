@@ -43,10 +43,6 @@ describe('connect', function(){ this.timeout(25000);
                 Log.w('22_cart',cart);
                 Log.w('22_cart_total',Store_Logic.get_cart_total(cart));
                 Log.w('33_get_order',Store_Logic.get_order(cart));
-
-
-
-
                 //cart -- end
                 //
                 //---
