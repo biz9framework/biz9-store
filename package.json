@@ -1,6 +1,6 @@
 {
   "name": "biz9-store",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "** Description",
   "main": "index.js",
   "scripts": {
@@ -32,5 +32,5 @@
   "bugs": {
     "url": "https://github.com/biz9framework/biz9-store/issues"
   },
-  "homepage": "https://github.com/biz9framework/biz9-store#readme"
+  "homepage": "https://github.com/biz9framework"
 }
