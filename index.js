@@ -26,14 +26,13 @@ class Store_Field {
     static CART_NUMBER = 'cart_number';
     static CART_ID = 'cart_id';
     static CART_ITEM_ID = 'cart_item_id';
-
-    static GRAND_TOTAL = 'grand_total';
     //order
     static ORDER_NUMBER = 'order_number';
     static ORDER_ID = 'order_id';
     static ORDER_ITEM_ID = 'order_item_id';
+    //other
+    static GRAND_TOTAL = 'grand_total';
 }
-
 class Store_Title {
     //cart
     static CART_ITEMS='Cart Items';
@@ -121,7 +120,7 @@ class Store_Logic {
         }});
         for(const key in cart) {
             if(!Obj.check_is_array(cart[key]) && Obj.check_is_object(cart[key])
-                && key != Data_Field.ID && key != Data_Field.DATA_TYPE
+                && key != Data_Field.ID && key != Data_Field.TABLE
                 && key != Data_Field.SOURCE && key != Data_Field.SOURCE_ID
                 && key != Data_Field.DATE_CREATE && key != Data_Field.DATE_SAVE)
             {
@@ -140,7 +139,7 @@ class Store_Logic {
             }});
             for(const key in cart_item){
                 if(!Obj.check_is_array(cart_item[key]) && Obj.check_is_object(cart_item[key])
-                    && key != Data_Field.ID && key != Data_Field.DATA_TYPE
+                    && key != Data_Field.ID && key != Data_Field.TABLE
                     && key != Data_Field.SOURCE && key != Data_Field.SOURCE_ID
                     && key != Data_Field.DATE_CREATE && key != Data_Field.DATE_SAVE){
                     order_item[key] = cart_item[key]
@@ -155,7 +154,7 @@ class Store_Logic {
                 }});
                 for(const key in cart_sub_item){
                     if(!Obj.check_is_array(order_sub_item[key]) && Obj.check_is_object(order_sub_item[key])
-                        && key != Data_Field.ID && key != Data_Field.DATA_TYPE
+                        && key != Data_Field.ID && key != Data_Field.TABLE
                         && key != Data_Field.SOURCE && key != Data_Field.SOURCE_ID
                         && key != Data_Field.DATE_CREATE && key != Data_Field.DATE_SAVE){
                         order_sub_item[key] = cart_sub_item[key]

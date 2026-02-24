@@ -1,16 +1,36 @@
 {
   "name": "biz9-store",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "** Description",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Brandon Poole Sr (BiZ9 Framework LLC)",
+  "license": "MIT",
   "dependencies": {
     "async": "^3.2.6",
-    "biz9-scriptz": "^5.8.12",
-    "biz9-utility": "^4.4.28"
-  }
+    "biz9-scriptz": "^5.8.25",
+    "biz9-utility": "^4.7.13"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/biz9framework/biz9-store.git"
+  },
+  "keywords": [
+    "JavaScript",
+    "Async",
+    "DateTime",
+    "Form",
+    "Log",
+    "String",
+    "Object",
+    "Const",
+    "Await"
+  ],
+  "bugs": {
+    "url": "https://github.com/biz9framework/biz9-store/issues"
+  },
+  "homepage": "https://github.com/biz9framework/biz9-store#readme"
 }

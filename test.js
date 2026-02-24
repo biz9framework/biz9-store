@@ -30,24 +30,28 @@ describe('connect', function(){ this.timeout(25000);
             async function(call){
                 //-->
                 let print_test = true;
-                //-->
-                //cart -- start
-                let user = User_Logic.get_test({generate_id:true});
-                let cart = Store_Logic.get_cart(user.id);
+                //-- CART -- START
+                let user = User_Logic.get_test_user({generate_id:true});
+                let cart = Store_Logic.get_cart(user.id,{cart_code:'CA'});
                 let product_1 = Store_Logic.get_test_product({generate_id:true});
                 let cart_item_1 = Store_Logic.get_cart_item(product_1.table,product_1.id,1,Store_Logic.get_test_cost());
                 let product_sub_1 = Store_Logic.get_test_product({generate_id:true});
                 let cart_sub_item_1 = Store_Logic.get_cart_sub_item(cart_item_1.id,Store_Type.CART_SUB_TYPE_STANDARD,product_1.table,product_1.id,1,Store_Logic.get_test_cost());
                 cart_item_1.cart_sub_items.push(cart_sub_item_1);
                 cart.cart_items.push(cart_item_1);
-                Log.w('22_cart',cart);
-                Log.w('22_cart_total',Store_Logic.get_cart_total(cart));
-                Log.w('33_get_order',Store_Logic.get_order(cart));
-                //cart -- end
+                //Log.w('22_cart',cart);
+                //-- CART -- END
+
+                //-- CART -- START
                 //
-                //---
+                //-- ORDER -- START
+                let order = Store_Logic.get_order(cart);
+                Log.w('33_order',order);
+                //-- ORDER -- END
+
+
                 if(print_test){;
-                    Log.w('99_biz_data',biz_data);
+                    //Log.w('99_biz_data',biz_data);
                 }
             },
         ],
