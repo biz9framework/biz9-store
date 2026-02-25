@@ -35,11 +35,13 @@ class Store_Field {
 }
 class Store_Title {
     //cart
+    static CART='Cart';
     static CART_ITEMS='Cart Items';
     static CART_SUB_ITEMS='Cart Sub Items';
     static CART_ITEMS='Cart Items';
     static CART_SUB_ITEMS='Cart Sub Items';
     //order
+    static ORDER='Order';
     static ORDER_ITEMS='Order Items';
     static ORDER_SUB_ITEMS='order Sub Items';
     static ORDER_STATUS_NEW="New";
@@ -48,6 +50,8 @@ class Store_Title {
     static ORDER_STATUS_RETURNED="Returned";
     static ORDER_STATUS_ON_HOLD="On Hold";
     static ORDER_STATUS_CANCELLED="Cancelled";
+    //product
+    static PRODUCT="Product";
 }
 class Store_Type {
     //cart
