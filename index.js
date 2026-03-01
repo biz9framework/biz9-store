@@ -7,6 +7,16 @@ Description: BiZ9 Framework: Store
 const {Scriptz}=require("biz9-scriptz");
 const {Log,Str,Num,Obj}=require("biz9-utility");
 const {Data_Logic,Data_Field} = require("/home/think1/www/doqbox/biz9-framework/biz9-data-logic/source");
+class Store_Url {
+    //cart
+    static CART_DELETE="biz9/store/cart_delete";
+    static CART="biz9/store/cart";
+    static CART_POST="biz9/store/cart_post";
+     //order
+    static ORDER_DELETE="biz9/store/order_delete";
+    static ORDER="biz9/store/order";
+    static ORDER_POST="biz9/store/order_post";
+}
 class Store_Table {
     //cart
     static CART="cart_biz";
@@ -17,7 +27,6 @@ class Store_Table {
     static ORDER="order_biz";
     static ORDER_ITEM="order_item_biz";
     static ORDER_SUB_ITEM="order_sub_item_biz";
-    static ORDER_PAYMENT="order_payment_biz";
     //product
     static PRODUCT = 'product_biz';
 }
@@ -55,6 +64,7 @@ class Store_Title {
 }
 class Store_Type {
     //cart
+    static CART_CODE = 'cart_code';
     static CART_SUB_TYPE_STANDARD = 'standard';
     static CART_SUB_TYPE_SHIPPING = 'shipping';
     static CART_SUB_TYPE_COUPON = 'coupon';
@@ -67,9 +77,8 @@ class Store_Type {
     static ORDER_STATUS_ON_HOLD="on_hold";
     static ORDER_STATUS_CANCELLED="cancelled";
 }
-class Store_Logic {
-    //cart -- start
-    static get_cart = (user_id,option) => {
+class Cart_Logic {
+    static get = (user_id,option) => {
         // - option - //
         // - cart_code = 'CA'
         option = !Obj.check_is_empty(option) ? option : {};
@@ -90,7 +99,7 @@ class Store_Logic {
             {title:Str.get_title(Title.CART_SUB_TYPE_GIFT_CARD),label:Str.get_title(Title.CART_SUB_TYPE_GIFT_CARD),type:Title.CART_SUB_TYPE_GIFT_CARD}
         ];
     };
-    static get_cart_total = (cart) => {
+    static get_total = (cart) => {
         let grand_total = 0;
         cart.cart_items.forEach(cart_item => {
             cart_item.sub_total = 0;
@@ -109,9 +118,9 @@ class Store_Logic {
         cart.grand_total = grand_total;
         return cart;
     };
-    //cart -- end
-    //order -- start
-    static get_order = (cart,option) => {
+}
+class Order_Logic {
+    static get = (cart,option) => {
         option = option?option:{};
         let order_code = option.order_code ? option.order_code+"-" : "";
         let order = Data_Logic.get(Store_Table.ORDER,0,{data:{
@@ -180,7 +189,7 @@ class Store_Logic {
             {value:Title.ORDER_STATUS_CANCELLED,label:Title.ORDER_STATUS_CANCELLED,title:Title.ORDER_STATUS_CANCELLED},
         ];
     };
-    static get_order_total = (order) => {
+    static get_total = (order) => {
         let grand_total = 0;
         order.order_items.forEach(order_item => {
             order_item.sub_total = 0;
@@ -208,8 +217,8 @@ class Store_Logic {
                 transaction_id:Title.ORDER_TRANSACTION_ID + Num.get_id(99999)
             }});
     };
-    //order -- end
-   //stock -- start
+}
+class Store_Logic {
     static get_stocks = () => {
         const stocks=
             [
@@ -240,8 +249,6 @@ class Store_Logic {
                 break;
         }
     };
-    //stock -- end
-    //product -- start
     static get_test_cost(){
         return String(Num.get_id(999)) + "." + String(Num.get_id(99));
     }
@@ -257,12 +264,14 @@ class Store_Logic {
         data.tag = "Tag "+ Num.get_id() + ", Tag "+Num.get_id() + ", Tag "+ Num.get_id();
         return data;
     };
-    //product -- end
 }
 module.exports = {
     Store_Field,
     Store_Title,
     Store_Table,
     Store_Type,
+    Store_Url,
+    Cart_Logic,
+    Order_Logic,
     Store_Logic,
 };
