@@ -1,6 +1,6 @@
 {
   "name": "biz9-store",
-  "version": "1.0.18",
+  "version": "1.0.19",
   "description": "** Description",
   "main": "index.js",
   "scripts": {
@@ -10,6 +10,7 @@
   "license": "MIT",
   "dependencies": {
     "async": "^3.2.6",
+    "biz9-data-logic": "^11.7.13",
     "biz9-scriptz": "^5.8.25",
     "biz9-utility": "^4.7.15"
   },

@@ -5,7 +5,7 @@ License GNU General Public License v3.0
 Description: BiZ9 Framework: Store
 */
 const {Log,Str,Num,Obj}=require("biz9-utility");
-const {Data_Logic,Data_Field} = require("/home/think1/www/doqbox/biz9-framework/biz9-data-logic/source");
+const {Data_Logic,Data_Field} = require("biz9-data-logic");
 class Store_Url {
     //cart
     static CART_DELETE="biz9/store/cart_delete";
