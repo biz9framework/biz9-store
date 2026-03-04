@@ -4,7 +4,6 @@ Author: Brandon Poole Sr. (biz9framework@gmail.com)
 License GNU General Public License v3.0
 Description: BiZ9 Framework: Store
 */
-const {Scriptz}=require("biz9-scriptz");
 const {Log,Str,Num,Obj}=require("biz9-utility");
 const {Data_Logic,Data_Field} = require("/home/think1/www/doqbox/biz9-framework/biz9-data-logic/source");
 class Store_Url {
