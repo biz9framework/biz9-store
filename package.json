@@ -1,6 +1,6 @@
 {
   "name": "biz9-store",
-  "version": "1.0.20",
+  "version": "1.0.21",
   "description": "** Description",
   "main": "index.js",
   "scripts": {
@@ -12,7 +12,7 @@
     "async": "^3.2.6",
     "biz9-data-logic": "^11.7.14",
     "biz9-scriptz": "^5.8.25",
-    "biz9-utility": "^4.7.15"
+    "biz9-utility": "^4.7.16"
   },
   "repository": {
     "type": "git",

@@ -56,7 +56,7 @@ class Log{
         console.log(String(title).toUpperCase()+ '___END_____________________'+formattedDateTimeLocale);
     };
     static error = (title,str) => {
-        const now = new date();
+        const now = new Date();
         const formatteddatetimelocale = now.tolocalestring('en-us', {
             year: 'numeric',
             month: '2-digit',
