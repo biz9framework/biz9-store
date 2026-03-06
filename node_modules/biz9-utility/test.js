@@ -20,11 +20,7 @@ describe("connect", () => {
             function(call) {
                 console.log('CONNECT-START');
                 console.log('get-datetime-start');
-                //const now = new Date();
-                option = {format:"dddd MMMM D, YYYY h:mm a"}
-                let date_post = DateTime.get(option);
-                let date_post_2 = DateTime.get_date_short(date_post);
-                Log.w('99_new_date',date_post_2);
+                Log.error('aaa','bbb');
                 /*
                 Log.w('99_get',DateTime.get(date_post,option));
                 Log.w('99_get_time',DateTime.get_time(date_post));

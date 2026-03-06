@@ -178,7 +178,7 @@ class Order_Logic {
         });
         return order;
     };
-    static get_order_statuses(){
+    static get_order_statuses = () =>{
         return [
             {value:Title.ORDER_STATUS_NEW,label:Title.ORDER_STATUS_NEW,title:Title.ORDER_STATUS_NEW},
             {value:Title.ORDER_STATUS_OPEN,label:Title.ORDER_STATUS_OPEN,title:Title.ORDER_STATUS_OPEN},
@@ -248,7 +248,7 @@ class Store_Logic {
                 break;
         }
     };
-    static get_test_cost(){
+    static get_test_cost = () =>{
         return String(Num.get_id(999)) + "." + String(Num.get_id(99));
     }
     static get_test_product = (option) =>{
